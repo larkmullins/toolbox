@@ -1,0 +1,90 @@
+---
+- hosts: all
+  sudo: true
+  vars:
+    configs:
+      - larkmullins
+  tasks:
+    - name: Disable firewalld
+      service: name=firewalld state=stopped enabled=no
+
+    # COMMENT out until ansible 1.9.4 is release/installed
+    #- name: Update packages
+    #  yum: name=* state=latest
+
+    - name: Install EPEL repository
+      yum: name=epel-release state=latest
+
+    - name: Install Remi repository
+      shell: "rpm -Uvh --replacepkgs http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
+
+    - name: Install ngnix
+      yum: name=nginx enablerepo=cr,epel state=latest
+
+    - name: Copy nginx config file
+      copy: src=resources/nginx/nginx.conf dest=/etc/nginx/nginx.conf
+
+    - name: Create sites-available directory
+      file: path=/etc/nginx/sites-available state=directory owner=root mode=755
+
+    - name: Create sites-enabled directory
+      file: path=/etc/nginx/sites-enabled state=directory owner=root mode=755
+
+    ### Website Nginx Files ###
+    - name: Copy nginx config file
+      copy: src=resources/nginx/sites-available/{{ item }}.local.conf dest=/etc/nginx/sites-available/{{ item }}.local.conf
+      with_items:
+        "{{ configs }}"
+
+    - name: Create nginx config symlinks
+      file: src=/etc/nginx/sites-available/{{ item }}.local.conf dest=/etc/nginx/sites-enabled/{{ item }}.local.conf state=link
+      with_items:
+        "{{ configs }}"
+
+    - name: Start and enable nginx
+      service: name=nginx state=started enabled=yes
+
+    - name: Install PHP
+      yum: name={{ item }} enablerepo=epel,remi,remi-php56 state=latest
+      with_items:
+          - gcc
+          - git
+          - make
+          - nmap
+          - pcre-devel
+          - php
+          - php-common
+          - php-cli
+          - php-devel
+          - php-fpm
+          - php-gd
+          - php-mbstring
+          - php-mcrypt
+          - php-pdo
+          - php-pecl-xdebug
+          - php-pgsql
+          - php-xml
+
+    - name: Copy php-fpm config files
+      copy: src=resources/php-fpm/www.conf dest=/etc/php-fpm.d/www.conf
+
+    - name: Start PHP-FPM
+      service: name=php-fpm state=started enabled=yes
+
+    - name: Clone Phalcon PHP Repository
+      git: repo=git://github.com/phalcon/cphalcon.git dest=/tmp/cphalcon depth=1 accept_hostkey=yes
+
+    - name: Install Phalcon PHP
+      command: ./install chdir=/tmp/cphalcon/build
+
+    - name: Copy phalcon.ini file
+      copy: src=resources/phalcon/phalcon.ini dest=/etc/php.d/phalcon.ini
+
+    - name: Delete cphalcon cloned repository
+      file: path=/tmp/cphalcon state=absent
+
+    - name: Clone Phalcon Dev-Tools Repository
+      git: repo=git://github.com/phalcon/phalcon-devtools.git dest=/home/vagrant/phalcon-devtools depth=1 accept_hostkey=yes
+
+    - name: Create Phalcon Dev-Tools Symlink
+      file: src=/home/vagrant/phalcon-devtools/phalcon.php dest=/usr/bin/phalcon state=link mode="ugo+x"
