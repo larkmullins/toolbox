@@ -1,0 +1,11 @@
+---
+# install PHPLoc
+
+- name: Download PHPLoc
+  get_url: url=https://phar.phpunit.de/phploc.phar dest=/tmp/phploc.phar
+
+- name: Set +x mode for phploc.phar
+  file: path=/tmp/phploc.phar mode="u+x,g+x,o+x"
+
+- name: Move phploc.phar to /usr/local/bin
+  command: mv /tmp/phploc.phar /usr/local/bin/phploc

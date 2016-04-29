@@ -1,0 +1,30 @@
+---
+- hosts: all
+  sudo: true
+  tasks:
+
+    #  @TODO
+    #  Setup to Install PIP
+    #  Setup to Install AWS CLI (after PIP is installed)
+    #  Setup to Install Ansible
+    #  Setup to Install CPAN (for installing Sqitch)
+    #    - sudo yum install perl-devel perl-CPAN && curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+    #  Setup to Install postgresql (for installing Sqitch)
+    #    - yum install postgresql postgresql-devel perl-DBD-Pg
+    #  Setup to Install Sqitch: cpan App::Sqitch DBD::Pg
+
+    - include: tasks/init.yml
+    - include: tasks/repositories.yml
+    - include: tasks/packages.yml
+
+    # install required tools
+    - include: tasks/tools/bower.yml
+    - include: tasks/tools/grunt.yml
+    - include: tasks/tools/gradle.yml
+    - include: tasks/tools/codeception.yml
+    - include: tasks/tools/phploc.yml
+    - include: tasks/tools/phpmetrics.yml
+
+    # This packages are ready just not required yet
+    #- include: tasks/tools/phpdepend.yml
+    #- include: tasks/tools/phantomjs.yml

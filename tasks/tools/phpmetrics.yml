@@ -1,0 +1,11 @@
+---
+# install PHP Metrics
+
+- name: Download PHPMetrics
+  get_url: url=https://github.com/Halleck45/PhpMetrics/raw/master/build/phpmetrics.phar dest=/tmp
+
+- name: Set +x mode for phpmetrics.phar
+  file: path=/tmp/phpmetrics.phar mode="u+x,g+x,o+x"
+
+- name: Move phpmetrics.phar to /usr/local/bin
+  command: mv /tmp/phpmetrics.phar /usr/local/bin/phpmetrics

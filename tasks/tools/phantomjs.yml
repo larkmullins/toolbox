@@ -1,0 +1,22 @@
+---
+# install PhantomJS
+
+- name: Download PhantomJS-1.9.8
+  get_url: url=https://github.com/ariya/phantomjs/archive/1.9.7.tar.gz dest=/tmp
+
+- name: Untar/Gzip PhantomJS tar.gz
+  unarchive: src=/tmp/phantomjs-1.9.7.tar.gz dest=/tmp copy=no
+
+- name: Build PhantomJS (this will take a while, please be patient)
+  command: /tmp/phantomjs-1.9.7/build.sh --confirm chdir=/tmp/phantomjs-1.9.7
+
+- name: Set +x mode for phantomjs
+  file: path=/tmp/phantomjs-1.9.7/bin/phantomjs mode="u+x,g+x,o+x"
+
+- name: Move PhantomJS install to /usr/local/bin
+  command: mv /tmp/phantomjs-1.9.7/bin/phantomjs /usr/local/bin
+
+- name: Start PhantomJS Webdriver on :4444
+  command: /usr/local/bin/phantomjs --webdriver=4444 &
+  async: 30
+  poll: 0

@@ -1,0 +1,11 @@
+---
+# install PHPDepend
+
+- name: Download PHPDepend
+  get_url: url=http://static.pdepend.org/php/latest/pdepend.phar dest=/tmp
+
+- name: Set +x mode for pdepend.phar
+  file: path=/tmp/pdepend.phar mode="u+x,g+x,o+x"
+
+- name: Move pdepend.phar to /usr/local/bin
+  command: mv /tmp/pdepend.phar /usr/local/bin/pdepend

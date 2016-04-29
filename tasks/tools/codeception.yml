@@ -1,0 +1,11 @@
+---
+# install codeception
+
+- name: Download Codeception
+  get_url: url=http://codeception.com/codecept.phar dest=/tmp
+
+- name: Set +x mode for codecept.phar
+  file: path=/tmp/codecept.phar mode="u+x,g+x,o+x"
+
+- name: Move codecept.phar to /usr/local/bin
+  command: mv /tmp/codecept.phar /usr/local/bin/codecept

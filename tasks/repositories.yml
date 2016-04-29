@@ -1,0 +1,17 @@
+---
+# install and enable required repositories
+
+- name: Install EPEL repository
+  yum: name=epel-release state=latest
+
+- name: Install Remi repository
+  shell: "rpm -Uvh --replacepkgs http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
+
+- name: Enable epel repository
+  ini_file: dest=/etc/yum.repos.d/epel.repo section=epel option=enabled value=1
+
+- name: Enable remi repository
+  ini_file: dest=/etc/yum.repos.d/remi.repo section=remi option=enabled value=1
+
+- name: Enable remi-php56 repository
+  ini_file: dest=/etc/yum.repos.d/remi.repo section=remi-php56 option=enabled value=1

@@ -1,0 +1,31 @@
+---
+# install required packages
+
+- name: Install Required Packages
+  yum: name={{ item }} state=latest
+  with_items:
+      - nodejs
+      - npm
+      - git
+      - gcc
+      - gcc-c++
+      - make
+      - flex
+      - bison
+      - gperf
+      - ruby
+      - openssl-devel
+      - freetype-devel
+      - fontconfig-devel
+      - libicu-devel
+      - sqlite-devel
+      - libpng-devel
+      - libjpeg-devel
+      - unzip
+      - php
+      - php-common
+      - php-xml
+      - php-mbstring
+      - java
+      - java-1.8.0-openjdk-devel
+      - rubygem-sass
