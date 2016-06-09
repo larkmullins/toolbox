@@ -1,6 +1,8 @@
 ---
 - hosts: all
   sudo: true
+  vars:
+    update_packages: True
   tasks:
 
     #  @TODO

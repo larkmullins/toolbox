@@ -10,8 +10,8 @@ VAGRANTFILE_API_VERSION = "2"
 #}
 
 directories = [
-  {:src => '/Users/larkmullins/Development/larkmullins-website',                      :dest => '/home/vagrant/larkmullins-website'},
-  {:src => '/Users/larkmullins/Development/oksanaframework/oksanaframework-website',  :dest => '/home/vagrant/oksanaframework-website'}
+  #{:src => '/Users/larkmullins/Development/larkmullins-website',                      :dest => '/home/vagrant/larkmullins-website'},
+  #{:src => '/Users/larkmullins/Development/oksanaframework/oksanaframework-website',  :dest => '/home/vagrant/oksanaframework-website'}
 ]
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -29,15 +29,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.boot_timeout = 4800
 
   # check platform (used for provisioning on Windows machines)
-  provisioner = Vagrant::Util::Platform.windows? ? "ansible_local" : "ansible"
+  #provisioner = Vagrant::Util::Platform.windows? ? "ansible_local" : "ansible"
+
+  # @TEMPORARY
+  # This is only here until Vagrant 1.8.2 gets released which has a fix for
+  # Ansible 2.0 new sys calls
+  config.vm.provision "shell", inline: "sudo yum install -y python-pip python-dev && sudo pip install ansible==1.9.2"
 
   # provision
-  config.vm.provision "ansible", type: provisioner do |ansible|
+  config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "playbook.yml"
-
-    if provisioner == "ansible_local"
-      ansible.install = true
-    end
+    ansible.verbose  = true
+    ansible.install  = true
   end
 
   # set static IP address with specified MAC address

@@ -8,3 +8,4 @@
 # Updates all packages to the latest version
 - name: Update packages
   yum: name=* state=latest
+  when: update_packages
